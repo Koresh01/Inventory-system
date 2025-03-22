@@ -1099,7 +1099,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 151e29dd30d8c22419b0efce0d4acd80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  moveSpeed: 5
+  mouseSensitivity: 3.5
+  joystickSensitivity: 100
+  maxLookAngle: 45
+  moveInput: {x: 0, y: 0}
+  lookInput: {x: 0, y: 0}
+  cameraPitch: 0
 --- !u!54 &1180647044
 Rigidbody:
   m_ObjectHideFlags: 0
