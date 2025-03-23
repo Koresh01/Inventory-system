@@ -3,12 +3,11 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// Контроллер drag & drop системы.
+/// Определяет на что навелся игрок, и вызывает действие удержания, если игрок нажал ПКМ.
 /// </summary>
-public class ItemDragHandler : MonoBehaviour
+public class PlayerDirectionLook : MonoBehaviour
 {
     private Camera mainCamera;
-    [SerializeField, Tooltip("Transform руки игрока.")] private Transform holdPosition; // Позиция, куда переносим предмет
 
     public UnityEvent OnStartLookAtItem;
     public UnityEvent OnStopLookAtItem;
@@ -16,8 +15,12 @@ public class ItemDragHandler : MonoBehaviour
     [Header("Ссылки на скрипты:")]
     [SerializeField] PointController pointController;
 
+
+
     [Header("Текущее состояние:")]
-    [SerializeField, Tooltip("Текущая деталь на которую смотрим.")] private MovableItem currentItem;
+    
+    [Tooltip("То на что смотрит игрок.")]
+    [SerializeField] IHoldable curGrabbleObj;
 
     private float lastHitTime = 0f; // Время последнего успешного попадания Raycast
     private float hitTimeout = 0.3f; // Тайм-аут для проверки успешного попадания Raycast
@@ -40,10 +43,10 @@ public class ItemDragHandler : MonoBehaviour
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray, out RaycastHit hit, 3f))
         {
-            if (hit.collider.TryGetComponent(out MovableItem item))
+            if (hit.collider.TryGetComponent(out IHoldable item))
             {
                 // Можно добавить визуальное выделение предмета (например, смену материала)
-                currentItem = item;
+                curGrabbleObj = item;
                 lastHitTime = Time.time; // Обновляем время последнего попадания
 
                 OnStartLookAtItem?.Invoke();
@@ -54,7 +57,7 @@ public class ItemDragHandler : MonoBehaviour
         // Если прошло больше времени, чем hitTimeout, сбрасываем currentItem
         if (Time.time - lastHitTime > hitTimeout)
         {
-            currentItem = null;
+            curGrabbleObj = null;
             OnStopLookAtItem?.Invoke();
         }
     }
@@ -67,17 +70,17 @@ public class ItemDragHandler : MonoBehaviour
     {
         if (context.started)
         {
-            if (currentItem != null)
+            if (curGrabbleObj != null)
             {
-                currentItem.StartDragging(holdPosition);
+                curGrabbleObj.StartHolding();
             }
         }
         else if (context.canceled)
         {
-            if (currentItem != null)
+            if (curGrabbleObj != null)
             {
-                currentItem.StopDragging();
-                currentItem = null;
+                curGrabbleObj.StopHolding();
+                curGrabbleObj = null;
             }
         }
     }

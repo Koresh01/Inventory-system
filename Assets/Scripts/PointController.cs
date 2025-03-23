@@ -5,7 +5,7 @@ using UnityEngine.UI;
 [AddComponentMenu("Custom/(Логика точки посреди эрана)")]
 public class PointController : MonoBehaviour
 {
-    ItemDragHandler itemDragHandler;
+    PlayerDirectionLook itemDragHandler;
 
     Image currentPointImg;
     [SerializeField] Sprite standart;

@@ -15,10 +15,10 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-public partial class @PlayerInput: IInputActionCollection2, IDisposable
+public partial class PlayerInput: IInputActionCollection2, IDisposable
 {
     public InputActionAsset asset { get; }
-    public @PlayerInput()
+    public PlayerInput()
     {
         asset = InputActionAsset.FromJson(@"{
     ""name"": ""PlayerInput"",
@@ -178,7 +178,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_FirstPersonView_Grab = m_FirstPersonView.FindAction("Grab", throwIfNotFound: true);
     }
 
-    ~@PlayerInput()
+    ~PlayerInput()
     {
         UnityEngine.Debug.Assert(!m_FirstPersonView.enabled, "This will cause a leak and performance issues, PlayerInput.FirstPersonView.Disable() has not been called.");
     }
@@ -247,8 +247,8 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_FirstPersonView_Grab;
     public struct FirstPersonViewActions
     {
-        private @PlayerInput m_Wrapper;
-        public FirstPersonViewActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        private PlayerInput m_Wrapper;
+        public FirstPersonViewActions(PlayerInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_FirstPersonView_Move;
         public InputAction @Look => m_Wrapper.m_FirstPersonView_Look;
         public InputAction @Grab => m_Wrapper.m_FirstPersonView_Grab;

@@ -1,13 +1,22 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Player : MonoBehaviour
+/// <summary>
+/// Обработчик устройств ввода пользователя.
+/// </summary>
+public class PlayerInputHandler : MonoBehaviour
 {
     private PlayerInput playerInput;
-    private Rigidbody rb;
+
+    [Header("Сам игрок:")]
+    [SerializeField] Rigidbody rb;
+    [SerializeField] Transform playerTransform;
+    
+    
     private Transform cameraTransform;
 
-    private ItemDragHandler itemDragHandler;
+    [Header("Ссылки на зависимости:")]
+    [SerializeField] PlayerDirectionLook playerDirectionLookHandler;
 
     [Header("Параметры игрока:")]
     [SerializeField] private float moveSpeed = 5f;
@@ -16,6 +25,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float maxLookAngle = 60f; // Ограничение угла камеры
 
     [Header("Состояние от устройств ввода:")]
+    public bool isPaused = false;
     [SerializeField] Vector2 moveInput;
     [SerializeField] Vector2 lookInput;
     [SerializeField] float cameraPitch = 0f; // Текущий угол наклона камеры
@@ -25,11 +35,7 @@ public class Player : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked; // Блокируем курсор в центре экрана
         Cursor.visible = false; // Делаем его невидимым
 
-        // Получаем зависимости
-        itemDragHandler = GetComponentInChildren<ItemDragHandler>();
-
         playerInput = new PlayerInput();
-        rb = GetComponent<Rigidbody>();
         cameraTransform = Camera.main.transform;
     }
 
@@ -46,8 +52,8 @@ public class Player : MonoBehaviour
         playerInput.FirstPersonView.Look.canceled += ctx => lookInput = Vector2.zero;
 
         // Drag & drop
-        playerInput.FirstPersonView.Grab.started += itemDragHandler.OnGrab;
-        playerInput.FirstPersonView.Grab.canceled += itemDragHandler.OnGrab;
+        playerInput.FirstPersonView.Grab.started += playerDirectionLookHandler.OnGrab;
+        playerInput.FirstPersonView.Grab.canceled += playerDirectionLookHandler.OnGrab;
     }
 
     private void OnDisable()
@@ -58,21 +64,26 @@ public class Player : MonoBehaviour
         playerInput.FirstPersonView.Look.performed -= ctx => lookInput = ctx.ReadValue<Vector2>();
         playerInput.FirstPersonView.Look.canceled -= ctx => lookInput = Vector2.zero;
 
-        playerInput.FirstPersonView.Grab.started -= itemDragHandler.OnGrab;
-        playerInput.FirstPersonView.Grab.canceled -= itemDragHandler.OnGrab;
+        playerInput.FirstPersonView.Grab.started -= playerDirectionLookHandler.OnGrab;
+        playerInput.FirstPersonView.Grab.canceled -= playerDirectionLookHandler.OnGrab;
 
         playerInput.Disable();
     }
 
     private void FixedUpdate()
     {
-        MoveHandler();
-        LookHandler();
+        if (!isPaused)
+        {
+            MoveHandler();
+            LookHandler();
+        }
+        else
+            rb.linearVelocity = Vector3.zero;
     }
 
     void MoveHandler()
     {
-        Vector3 move = transform.forward * moveInput.y + transform.right * moveInput.x;
+        Vector3 move = playerTransform.forward * moveInput.y + playerTransform.right * moveInput.x;
         move *= moveSpeed;
         rb.linearVelocity = new Vector3(move.x, rb.linearVelocity.y, move.z);
     }
@@ -82,7 +93,7 @@ public class Player : MonoBehaviour
         float sensitivity = IsUsingMouse() ? mouseSensitivity : joystickSensitivity;
 
         // Поворот персонажа (влево-вправо)
-        transform.Rotate(Vector3.up * lookInput.x * sensitivity * Time.deltaTime);
+        playerTransform.Rotate(Vector3.up * lookInput.x * sensitivity * Time.deltaTime);
 
         // Поворот камеры (вверх-вниз) с ограничением
         cameraPitch -= lookInput.y * sensitivity * Time.deltaTime;
