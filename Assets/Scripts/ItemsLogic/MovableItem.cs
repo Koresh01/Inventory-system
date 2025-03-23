@@ -3,7 +3,7 @@
 /// <summary>
 /// Заставляет Item на сцене двигаться за followTarget. Висит на каждой Item на сцене.
 /// </summary>
-[AddComponentMenu("Custom/CameraShaker (Контроллер следования за рукой)")]
+[AddComponentMenu("Custom/MovableItem (Контроллер следования за рукой)")]
 public class MovableItem : MonoBehaviour
 {
     [SerializeField] private Rigidbody rb;

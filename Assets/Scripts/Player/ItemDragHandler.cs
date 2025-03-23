@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 /// <summary>
@@ -6,10 +7,20 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class ItemDragHandler : MonoBehaviour
 {
+    private Camera mainCamera;
     [SerializeField, Tooltip("Transform руки игрока.")] private Transform holdPosition; // Позиция, куда переносим предмет
 
-    private Camera mainCamera;
+    public UnityEvent OnStartLookAtItem;
+    public UnityEvent OnStopLookAtItem;
+
+    [Header("Ссылки на скрипты:")]
+    [SerializeField] PointController pointController;
+
+    [Header("Текущее состояние:")]
     [SerializeField, Tooltip("Текущая деталь на которую смотрим.")] private MovableItem currentItem;
+
+    private float lastHitTime = 0f; // Время последнего успешного попадания Raycast
+    private float hitTimeout = 0.3f; // Тайм-аут для проверки успешного попадания Raycast
 
     private void Awake()
     {
@@ -33,14 +44,20 @@ public class ItemDragHandler : MonoBehaviour
             {
                 // Можно добавить визуальное выделение предмета (например, смену материала)
                 currentItem = item;
+                lastHitTime = Time.time; // Обновляем время последнего попадания
+
+                OnStartLookAtItem?.Invoke();
                 return; // Вышли из метода, т.к. предмет найден
             }
         }
 
-        // Если ничего не найдено или предмет не DraggableItem — сбрасываем currentItem
-        currentItem = null;
+        // Если прошло больше времени, чем hitTimeout, сбрасываем currentItem
+        if (Time.time - lastHitTime > hitTimeout)
+        {
+            currentItem = null;
+            OnStopLookAtItem?.Invoke();
+        }
     }
-
 
     /// <summary>
     /// Обработчик события нажатия на кнопку взятия.
