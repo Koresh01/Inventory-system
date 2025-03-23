@@ -4,9 +4,9 @@ public class Ammo : MonoBehaviour, IItem
 {
     [SerializeField] private Sprite icon;
     [SerializeField] private int weight;
-    [SerializeField] private string itemName;
+    [SerializeField] private ItemType itemType;
 
     public Sprite Icon => icon;
     public int Weight => weight;
-    public string Name => itemName;
+    public ItemType ItemType => itemType;
 }
