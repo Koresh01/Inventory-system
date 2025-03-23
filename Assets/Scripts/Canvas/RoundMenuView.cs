@@ -27,10 +27,10 @@ public class RoundMenuView : MonoBehaviour
                 case ItemType.Binoculars:
                     binocularsCount.text = item.Value.ToString();
                     break;
-                case ItemType.heal:
+                case ItemType.Heal:
                     healsCount.text = (item.Value.ToString());
                     break;
-                case ItemType.ammo:
+                case ItemType.Ammo:
                     ammosCount.text = (item.Value.ToString());
                     break;
             }

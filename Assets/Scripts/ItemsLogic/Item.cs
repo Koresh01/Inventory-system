@@ -33,7 +33,6 @@ public class Item : MonoBehaviour, IHoldable
     public void StopHolding()
     {
         isBeingDragged = false;
-        followTarget = null;
         rb.useGravity = true;
         rb.isKinematic = false; // Включаем физику обратно
     }
