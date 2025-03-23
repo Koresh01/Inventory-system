@@ -15,10 +15,10 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-public partial class PlayerInput: IInputActionCollection2, IDisposable
+public partial class @PlayerInput: IInputActionCollection2, IDisposable
 {
     public InputActionAsset asset { get; }
-    public PlayerInput()
+    public @PlayerInput()
     {
         asset = InputActionAsset.FromJson(@"{
     ""name"": ""PlayerInput"",
@@ -167,6 +167,45 @@ public partial class PlayerInput: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""MenuControl"",
+            ""id"": ""d16b2096-80fe-4d3a-aa19-1ec07b3f1bfb"",
+            ""actions"": [
+                {
+                    ""name"": ""RoundMenu"",
+                    ""type"": ""Value"",
+                    ""id"": ""86a71eb0-d103-4660-8a7e-1719903f6b16"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""f227d6cb-19ab-4613-8003-0d5e8d6ebc99"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RoundMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8fe5e103-ef34-4a30-ba75-1d8c7bf93061"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RoundMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -176,11 +215,15 @@ public partial class PlayerInput: IInputActionCollection2, IDisposable
         m_FirstPersonView_Move = m_FirstPersonView.FindAction("Move", throwIfNotFound: true);
         m_FirstPersonView_Look = m_FirstPersonView.FindAction("Look", throwIfNotFound: true);
         m_FirstPersonView_Grab = m_FirstPersonView.FindAction("Grab", throwIfNotFound: true);
+        // MenuControl
+        m_MenuControl = asset.FindActionMap("MenuControl", throwIfNotFound: true);
+        m_MenuControl_RoundMenu = m_MenuControl.FindAction("RoundMenu", throwIfNotFound: true);
     }
 
-    ~PlayerInput()
+    ~@PlayerInput()
     {
         UnityEngine.Debug.Assert(!m_FirstPersonView.enabled, "This will cause a leak and performance issues, PlayerInput.FirstPersonView.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_MenuControl.enabled, "This will cause a leak and performance issues, PlayerInput.MenuControl.Disable() has not been called.");
     }
 
     public void Dispose()
@@ -247,8 +290,8 @@ public partial class PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_FirstPersonView_Grab;
     public struct FirstPersonViewActions
     {
-        private PlayerInput m_Wrapper;
-        public FirstPersonViewActions(PlayerInput wrapper) { m_Wrapper = wrapper; }
+        private @PlayerInput m_Wrapper;
+        public FirstPersonViewActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_FirstPersonView_Move;
         public InputAction @Look => m_Wrapper.m_FirstPersonView_Look;
         public InputAction @Grab => m_Wrapper.m_FirstPersonView_Grab;
@@ -300,10 +343,60 @@ public partial class PlayerInput: IInputActionCollection2, IDisposable
         }
     }
     public FirstPersonViewActions @FirstPersonView => new FirstPersonViewActions(this);
+
+    // MenuControl
+    private readonly InputActionMap m_MenuControl;
+    private List<IMenuControlActions> m_MenuControlActionsCallbackInterfaces = new List<IMenuControlActions>();
+    private readonly InputAction m_MenuControl_RoundMenu;
+    public struct MenuControlActions
+    {
+        private @PlayerInput m_Wrapper;
+        public MenuControlActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @RoundMenu => m_Wrapper.m_MenuControl_RoundMenu;
+        public InputActionMap Get() { return m_Wrapper.m_MenuControl; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(MenuControlActions set) { return set.Get(); }
+        public void AddCallbacks(IMenuControlActions instance)
+        {
+            if (instance == null || m_Wrapper.m_MenuControlActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_MenuControlActionsCallbackInterfaces.Add(instance);
+            @RoundMenu.started += instance.OnRoundMenu;
+            @RoundMenu.performed += instance.OnRoundMenu;
+            @RoundMenu.canceled += instance.OnRoundMenu;
+        }
+
+        private void UnregisterCallbacks(IMenuControlActions instance)
+        {
+            @RoundMenu.started -= instance.OnRoundMenu;
+            @RoundMenu.performed -= instance.OnRoundMenu;
+            @RoundMenu.canceled -= instance.OnRoundMenu;
+        }
+
+        public void RemoveCallbacks(IMenuControlActions instance)
+        {
+            if (m_Wrapper.m_MenuControlActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IMenuControlActions instance)
+        {
+            foreach (var item in m_Wrapper.m_MenuControlActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_MenuControlActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public MenuControlActions @MenuControl => new MenuControlActions(this);
     public interface IFirstPersonViewActions
     {
         void OnMove(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnGrab(InputAction.CallbackContext context);
+    }
+    public interface IMenuControlActions
+    {
+        void OnRoundMenu(InputAction.CallbackContext context);
     }
 }
