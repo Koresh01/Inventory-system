@@ -10,6 +10,8 @@ public class Inventory : MonoBehaviour, IHoldable
 
     [Header("—сылки на зависимости:")]
     [SerializeField] PlayerInputHandler playerInputHandler;
+    [SerializeField] MenuInputHandler menuInputHandler;
+
     [SerializeField] GameObject inventoryPanel;
 
     private void Awake()

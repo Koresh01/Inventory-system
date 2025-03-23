@@ -151,7 +151,7 @@
             "id": "d16b2096-80fe-4d3a-aa19-1ec07b3f1bfb",
             "actions": [
                 {
-                    "name": "RoundMenu",
+                    "name": "RoundValue",
                     "type": "Value",
                     "id": "86a71eb0-d103-4660-8a7e-1719903f6b16",
                     "expectedControlType": "Vector2",
@@ -168,7 +168,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "RoundMenu",
+                    "action": "RoundValue",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -179,7 +179,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "RoundMenu",
+                    "action": "RoundValue",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -173,7 +173,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             ""id"": ""d16b2096-80fe-4d3a-aa19-1ec07b3f1bfb"",
             ""actions"": [
                 {
-                    ""name"": ""RoundMenu"",
+                    ""name"": ""RoundValue"",
                     ""type"": ""Value"",
                     ""id"": ""86a71eb0-d103-4660-8a7e-1719903f6b16"",
                     ""expectedControlType"": ""Vector2"",
@@ -190,7 +190,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""RoundMenu"",
+                    ""action"": ""RoundValue"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -201,7 +201,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""RoundMenu"",
+                    ""action"": ""RoundValue"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -217,7 +217,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_FirstPersonView_Grab = m_FirstPersonView.FindAction("Grab", throwIfNotFound: true);
         // MenuControl
         m_MenuControl = asset.FindActionMap("MenuControl", throwIfNotFound: true);
-        m_MenuControl_RoundMenu = m_MenuControl.FindAction("RoundMenu", throwIfNotFound: true);
+        m_MenuControl_RoundValue = m_MenuControl.FindAction("RoundValue", throwIfNotFound: true);
     }
 
     ~@PlayerInput()
@@ -347,12 +347,12 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     // MenuControl
     private readonly InputActionMap m_MenuControl;
     private List<IMenuControlActions> m_MenuControlActionsCallbackInterfaces = new List<IMenuControlActions>();
-    private readonly InputAction m_MenuControl_RoundMenu;
+    private readonly InputAction m_MenuControl_RoundValue;
     public struct MenuControlActions
     {
         private @PlayerInput m_Wrapper;
         public MenuControlActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
-        public InputAction @RoundMenu => m_Wrapper.m_MenuControl_RoundMenu;
+        public InputAction @RoundValue => m_Wrapper.m_MenuControl_RoundValue;
         public InputActionMap Get() { return m_Wrapper.m_MenuControl; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -362,16 +362,16 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_MenuControlActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_MenuControlActionsCallbackInterfaces.Add(instance);
-            @RoundMenu.started += instance.OnRoundMenu;
-            @RoundMenu.performed += instance.OnRoundMenu;
-            @RoundMenu.canceled += instance.OnRoundMenu;
+            @RoundValue.started += instance.OnRoundValue;
+            @RoundValue.performed += instance.OnRoundValue;
+            @RoundValue.canceled += instance.OnRoundValue;
         }
 
         private void UnregisterCallbacks(IMenuControlActions instance)
         {
-            @RoundMenu.started -= instance.OnRoundMenu;
-            @RoundMenu.performed -= instance.OnRoundMenu;
-            @RoundMenu.canceled -= instance.OnRoundMenu;
+            @RoundValue.started -= instance.OnRoundValue;
+            @RoundValue.performed -= instance.OnRoundValue;
+            @RoundValue.canceled -= instance.OnRoundValue;
         }
 
         public void RemoveCallbacks(IMenuControlActions instance)
@@ -397,6 +397,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     }
     public interface IMenuControlActions
     {
-        void OnRoundMenu(InputAction.CallbackContext context);
+        void OnRoundValue(InputAction.CallbackContext context);
     }
 }
