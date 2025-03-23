@@ -6,7 +6,7 @@ using UnityEngine;
 /// </summary>
 public class Inventory : MonoBehaviour, IHoldable
 {
-    private Dictionary<ItemType, int> items = new Dictionary<ItemType, int>();
+    public Dictionary<ItemType, int> items = new Dictionary<ItemType, int>();
 
     [Header("—сылки на зависимости:")]
     [SerializeField] PlayerInputHandler playerInputHandler;
