@@ -44,6 +44,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Grab"",
+                    ""type"": ""Button"",
+                    ""id"": ""a5016348-6d13-401a-b20a-f13cbeea7621"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -134,6 +143,17 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""Look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0aef8ec6-9f5e-4836-ac7a-176f75f600e2"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Grab"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -144,6 +164,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_FirstPersonView = asset.FindActionMap("FirstPersonView", throwIfNotFound: true);
         m_FirstPersonView_Move = m_FirstPersonView.FindAction("Move", throwIfNotFound: true);
         m_FirstPersonView_Look = m_FirstPersonView.FindAction("Look", throwIfNotFound: true);
+        m_FirstPersonView_Grab = m_FirstPersonView.FindAction("Grab", throwIfNotFound: true);
     }
 
     ~@PlayerInput()
@@ -212,12 +233,14 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private List<IFirstPersonViewActions> m_FirstPersonViewActionsCallbackInterfaces = new List<IFirstPersonViewActions>();
     private readonly InputAction m_FirstPersonView_Move;
     private readonly InputAction m_FirstPersonView_Look;
+    private readonly InputAction m_FirstPersonView_Grab;
     public struct FirstPersonViewActions
     {
         private @PlayerInput m_Wrapper;
         public FirstPersonViewActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_FirstPersonView_Move;
         public InputAction @Look => m_Wrapper.m_FirstPersonView_Look;
+        public InputAction @Grab => m_Wrapper.m_FirstPersonView_Grab;
         public InputActionMap Get() { return m_Wrapper.m_FirstPersonView; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -233,6 +256,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Look.started += instance.OnLook;
             @Look.performed += instance.OnLook;
             @Look.canceled += instance.OnLook;
+            @Grab.started += instance.OnGrab;
+            @Grab.performed += instance.OnGrab;
+            @Grab.canceled += instance.OnGrab;
         }
 
         private void UnregisterCallbacks(IFirstPersonViewActions instance)
@@ -243,6 +269,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Look.started -= instance.OnLook;
             @Look.performed -= instance.OnLook;
             @Look.canceled -= instance.OnLook;
+            @Grab.started -= instance.OnGrab;
+            @Grab.performed -= instance.OnGrab;
+            @Grab.canceled -= instance.OnGrab;
         }
 
         public void RemoveCallbacks(IFirstPersonViewActions instance)
@@ -264,5 +293,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
+        void OnGrab(InputAction.CallbackContext context);
     }
 }

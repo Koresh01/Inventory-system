@@ -7,6 +7,8 @@ public class Player : MonoBehaviour
     private Rigidbody rb;
     private Transform cameraTransform;
 
+    private ItemDragHandler itemDragHandler;
+
     [Header("Параметры игрока:")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float mouseSensitivity = 0.1f;
@@ -22,6 +24,9 @@ public class Player : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked; // Блокируем курсор в центре экрана
         Cursor.visible = false; // Делаем его невидимым
+
+        // Получаем зависимости
+        itemDragHandler = GetComponentInChildren<ItemDragHandler>();
 
         playerInput = new PlayerInput();
         rb = GetComponent<Rigidbody>();
@@ -39,6 +44,10 @@ public class Player : MonoBehaviour
         // Вращение камеры
         playerInput.FirstPersonView.Look.performed += ctx => lookInput = ctx.ReadValue<Vector2>();
         playerInput.FirstPersonView.Look.canceled += ctx => lookInput = Vector2.zero;
+
+        // Drag & drop
+        playerInput.FirstPersonView.Grab.started += itemDragHandler.OnGrab;
+        playerInput.FirstPersonView.Grab.canceled += itemDragHandler.OnGrab;
     }
 
     private void OnDisable()
@@ -48,6 +57,9 @@ public class Player : MonoBehaviour
 
         playerInput.FirstPersonView.Look.performed -= ctx => lookInput = ctx.ReadValue<Vector2>();
         playerInput.FirstPersonView.Look.canceled -= ctx => lookInput = Vector2.zero;
+
+        playerInput.FirstPersonView.Grab.started -= itemDragHandler.OnGrab;
+        playerInput.FirstPersonView.Grab.canceled -= itemDragHandler.OnGrab;
 
         playerInput.Disable();
     }
