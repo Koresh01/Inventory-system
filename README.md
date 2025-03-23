@@ -27,4 +27,24 @@ response:
 * Опубликовать проект в общий доступ на GitHub для проверки.
 * Опубликовать сборку игры на itch.io с возможностью теста в браузере (webGL) для проверки.
 
-![image](https://github.com/user-attachments/assets/91c0b949-be01-442d-b339-e8ba3d9de5af)
+# Фотографии законченной(почти всё смог сделать) работы:
+Отмечу, что я использовал новую систему ввода Unity. Так что играть можно ещё и на джойстике. 
+ПКМ - взаимодействие с предметами
+WASD/space - перемещение/прыжок.
+
+![image](https://github.com/user-attachments/assets/0ccb2b9d-8659-4e3b-804d-be3a16743a0e)
+![image](https://github.com/user-attachments/assets/d4aca3d0-b32c-4f48-b104-e8c207f41d1b)
+
+Вращаем мышку, с нажатой ПКМ и выбираем предмет, который хотим достать:
+![image](https://github.com/user-attachments/assets/b182fe18-e79a-4b20-9c69-3e1ec1978c9a)
+
+Вот как перемещаем предметы:
+![image](https://github.com/user-attachments/assets/f2a3e1d6-c605-408c-bd65-ecf8526f4edf)
+
+Вещи, которые мы достали из рюкзака оказываются вот тут:
+![image](https://github.com/user-attachments/assets/00bb2cde-8e9b-413a-9558-99c85c8735c2)
+
+
+
+
+
