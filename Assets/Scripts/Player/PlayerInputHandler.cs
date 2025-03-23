@@ -11,8 +11,8 @@ public class PlayerInputHandler : MonoBehaviour
     [Header("Сам игрок:")]
     [SerializeField] Rigidbody rb;
     [SerializeField] Transform playerTransform;
-    
-    
+    [SerializeField] bool isGrounded;
+
     private Transform cameraTransform;
 
     [Header("Ссылки на зависимости:")]
@@ -23,12 +23,14 @@ public class PlayerInputHandler : MonoBehaviour
     [SerializeField] private float mouseSensitivity = 0.1f;
     [SerializeField] private float joystickSensitivity = 1f;
     [SerializeField] private float maxLookAngle = 60f; // Ограничение угла камеры
+    [SerializeField] private float jumpForce = 10f; // Сила прыжка
 
     [Header("Состояние от устройств ввода:")]
     public bool isPaused = false;
     [SerializeField] Vector2 moveInput;
     [SerializeField] Vector2 lookInput;
     [SerializeField] float cameraPitch = 0f; // Текущий угол наклона камеры
+
 
     private void Awake()
     {
@@ -46,6 +48,9 @@ public class PlayerInputHandler : MonoBehaviour
         // Перемещение
         playerInput.FirstPersonView.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         playerInput.FirstPersonView.Move.canceled += ctx => moveInput = Vector2.zero;
+
+        // Прыжок
+        playerInput.FirstPersonView.Jump.performed += Jump;
 
         // Вращение камеры
         playerInput.FirstPersonView.Look.performed += ctx => lookInput = ctx.ReadValue<Vector2>();
@@ -76,16 +81,27 @@ public class PlayerInputHandler : MonoBehaviour
         {
             MoveHandler();
             LookHandler();
+            CheckGroundedStatus(); // Проверка на приземление
         }
         else
-            rb.linearVelocity = Vector3.zero;
+            rb.velocity = Vector3.zero;
+    }
+
+    void Jump(InputAction.CallbackContext context)
+    {
+        if (isGrounded) // Прыжок только если на земле
+        {
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
     }
 
     void MoveHandler()
     {
+        if (!isGrounded) return;
+
         Vector3 move = playerTransform.forward * moveInput.y + playerTransform.right * moveInput.x;
         move *= moveSpeed;
-        rb.linearVelocity = new Vector3(move.x, rb.linearVelocity.y, move.z);
+        rb.velocity = new Vector3(move.x, rb.velocity.y, move.z); // Контролируем движение по оси X и Z, но сохраняем вертикальную скорость
     }
 
     void LookHandler()
@@ -104,5 +120,11 @@ public class PlayerInputHandler : MonoBehaviour
     private bool IsUsingMouse()
     {
         return Mouse.current != null && Mouse.current.delta.ReadValue() != Vector2.zero;
+    }
+
+    // Проверка на приземление
+    private void CheckGroundedStatus()
+    {
+        isGrounded = Physics.Raycast(playerTransform.position, Vector3.down, 2f); // Проверяем, есть ли земля под игроком
     }
 }

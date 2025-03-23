@@ -2374,11 +2374,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 1180647044}
   playerTransform: {fileID: 1180647042}
+  isGrounded: 0
   playerDirectionLookHandler: {fileID: 1052338454}
   moveSpeed: 5
   mouseSensitivity: 3.5
   joystickSensitivity: 100
-  maxLookAngle: 60
+  maxLookAngle: 80
+  jumpForce: 500
   isPaused: 0
   moveInput: {x: 0, y: 0}
   lookInput: {x: 0, y: 0}

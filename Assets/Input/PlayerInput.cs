@@ -53,6 +53,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""58d0d845-578b-4d9e-969f-f99220ad8887"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -165,6 +174,28 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""Grab"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d1f8f67b-f7c8-495a-90cc-658bf6593d18"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""85e1364e-28ea-4d1b-b716-0db558e9fa49"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -215,6 +246,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_FirstPersonView_Move = m_FirstPersonView.FindAction("Move", throwIfNotFound: true);
         m_FirstPersonView_Look = m_FirstPersonView.FindAction("Look", throwIfNotFound: true);
         m_FirstPersonView_Grab = m_FirstPersonView.FindAction("Grab", throwIfNotFound: true);
+        m_FirstPersonView_Jump = m_FirstPersonView.FindAction("Jump", throwIfNotFound: true);
         // MenuControl
         m_MenuControl = asset.FindActionMap("MenuControl", throwIfNotFound: true);
         m_MenuControl_RoundValue = m_MenuControl.FindAction("RoundValue", throwIfNotFound: true);
@@ -288,6 +320,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_FirstPersonView_Move;
     private readonly InputAction m_FirstPersonView_Look;
     private readonly InputAction m_FirstPersonView_Grab;
+    private readonly InputAction m_FirstPersonView_Jump;
     public struct FirstPersonViewActions
     {
         private @PlayerInput m_Wrapper;
@@ -295,6 +328,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_FirstPersonView_Move;
         public InputAction @Look => m_Wrapper.m_FirstPersonView_Look;
         public InputAction @Grab => m_Wrapper.m_FirstPersonView_Grab;
+        public InputAction @Jump => m_Wrapper.m_FirstPersonView_Jump;
         public InputActionMap Get() { return m_Wrapper.m_FirstPersonView; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -313,6 +347,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Grab.started += instance.OnGrab;
             @Grab.performed += instance.OnGrab;
             @Grab.canceled += instance.OnGrab;
+            @Jump.started += instance.OnJump;
+            @Jump.performed += instance.OnJump;
+            @Jump.canceled += instance.OnJump;
         }
 
         private void UnregisterCallbacks(IFirstPersonViewActions instance)
@@ -326,6 +363,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Grab.started -= instance.OnGrab;
             @Grab.performed -= instance.OnGrab;
             @Grab.canceled -= instance.OnGrab;
+            @Jump.started -= instance.OnJump;
+            @Jump.performed -= instance.OnJump;
+            @Jump.canceled -= instance.OnJump;
         }
 
         public void RemoveCallbacks(IFirstPersonViewActions instance)
@@ -394,6 +434,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnGrab(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
     }
     public interface IMenuControlActions
     {
