@@ -9,7 +9,7 @@ public class ItemDragHandler : MonoBehaviour
     [SerializeField, Tooltip("Transform руки игрока.")] private Transform holdPosition; // Позиция, куда переносим предмет
 
     private Camera mainCamera;
-    [SerializeField, Tooltip("Текущая деталь на которую смотрим.")] private DraggableItem currentItem;
+    [SerializeField, Tooltip("Текущая деталь на которую смотрим.")] private MovableItem currentItem;
 
     private void Awake()
     {
@@ -29,7 +29,7 @@ public class ItemDragHandler : MonoBehaviour
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray, out RaycastHit hit, 3f))
         {
-            if (hit.collider.TryGetComponent(out DraggableItem item))
+            if (hit.collider.TryGetComponent(out MovableItem item))
             {
                 // Можно добавить визуальное выделение предмета (например, смену материала)
                 currentItem = item;

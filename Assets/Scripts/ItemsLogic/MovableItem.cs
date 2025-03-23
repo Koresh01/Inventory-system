@@ -3,11 +3,14 @@
 /// <summary>
 /// Заставляет Item на сцене двигаться за followTarget. Висит на каждой Item на сцене.
 /// </summary>
-public class DraggableItem : MonoBehaviour
+[AddComponentMenu("Custom/CameraShaker (Контроллер следования за рукой)")]
+public class MovableItem : MonoBehaviour
 {
     [SerializeField] private Rigidbody rb;
     [SerializeField] private bool isBeingDragged = false;
-    [SerializeField] private Transform followTarget;
+    [SerializeField, Tooltip("Transform руки персонажа.")] private Transform followTarget;
+
+    private Vector3 velocity = Vector3.zero;
 
     private void Awake()
     {
@@ -34,7 +37,7 @@ public class DraggableItem : MonoBehaviour
     {
         if (isBeingDragged && followTarget != null)
         {
-            transform.position = Vector3.Lerp(transform.position, followTarget.position, Time.deltaTime * 20f);
+            transform.position = followTarget.position;
         }
     }
 }
